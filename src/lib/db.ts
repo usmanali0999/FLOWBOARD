@@ -1,11 +1,21 @@
-import { PrismaClient } from "@prisma/client";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { PrismaClient } = require("../generated/prisma/client")
 
-const globalForPrisma = globalThis as unknown as {
-  prisma?: PrismaClient;
-};
+declare global {
+  // eslint-disable-next-line no-var
+  var prisma: InstanceType<typeof PrismaClient> | undefined
+}
 
-export const db = globalForPrisma.prisma ?? new PrismaClient();
+export const db =
+  globalThis.prisma ??
+  new PrismaClient({
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL,
+      },
+    },
+  })
 
 if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = db;
+  globalThis.prisma = db
 }
