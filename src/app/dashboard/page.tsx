@@ -1,6 +1,6 @@
-import Link from "next/link";
+import { auth } from "@/auth";
+import { SignOutButton } from "@/features/auth/components/sign-out-button";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -16,38 +16,37 @@ const stats = [
 ];
 
 const nextSteps = [
-  "auth.js login system — google + credentials",
-  "workspace creation & management",
-  "kanban board UI with columns",
+  "workspace creation and member invites",
+  "kanban board ui with columns",
   "drag and drop task management",
-  "realtime collaboration via websockets",
+  "realtime updates across teams",
+  "role-based permissions and analytics",
 ];
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await auth();
+
   return (
     <main className="min-h-screen bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 py-10 md:px-6">
-
-        {/* Header */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
             <Badge variant="secondary" className="rounded-full">
-              alpha — phase 01
+              authenticated dashboard
             </Badge>
+
             <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-              dashboard overview
+              welcome back, {session?.user?.name ?? "builder"}
             </h1>
+
             <p className="mt-2 text-sm text-muted-foreground">
-              Foundation is ready. Auth, boards, and real data coming next.
+              Signed in as {session?.user?.email}
             </p>
           </div>
 
-          <Button asChild variant="outline" className="rounded-xl">
-            <Link href="/">back to home</Link>
-          </Button>
+          <SignOutButton />
         </div>
 
-        {/* Stats */}
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           {stats.map((stat) => (
             <Card key={stat.title} className="rounded-2xl">
@@ -61,14 +60,14 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Next Steps */}
         <Card className="mt-6 rounded-2xl">
           <CardHeader>
-            <CardTitle className="capitalize">implementation roadmap</CardTitle>
+            <CardTitle className="capitalize">next implementation roadmap</CardTitle>
             <CardDescription>
-              Features being built in sequence — each step is production-grade.
+              Authentication is complete. Product modules come next.
             </CardDescription>
           </CardHeader>
+
           <CardContent className="space-y-3">
             {nextSteps.map((step, index) => (
               <div
@@ -83,7 +82,6 @@ export default function DashboardPage() {
             ))}
           </CardContent>
         </Card>
-
       </div>
     </main>
   );
