@@ -47,13 +47,11 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(
-      {
-        message: "Account created successfully",
-        user,
-      },
+      { message: "Account created successfully", user },
       { status: 201 },
     );
-  } catch {
+  } catch (error) {
+    console.error("[REGISTER ERROR]", error);
     return NextResponse.json(
       { message: "Something went wrong" },
       { status: 500 },
