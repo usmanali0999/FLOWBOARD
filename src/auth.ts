@@ -8,7 +8,7 @@ import { db } from "@/lib/db";
 import { loginSchema } from "@/features/auth/schemas";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db as any),
+  adapter: PrismaAdapter(db),
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
@@ -25,7 +25,6 @@ export const authOptions: NextAuthOptions = {
           }),
         ]
       : []),
-
     CredentialsProvider({
       name: "credentials",
       credentials: {

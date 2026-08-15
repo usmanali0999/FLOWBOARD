@@ -1,17 +1,15 @@
 import { z } from "zod";
 
-export const createWorkspaceSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(3, "Workspace name must be at least 3 characters")
-    .max(40, "Workspace name must be at most 40 characters"),
-  description: z
-    .string()
-    .trim()
-    .max(160, "Description must be at most 160 characters")
-    .optional()
-    .or(z.literal("")),
+export const loginSchema = z.object({
+  email: z.string().email("Enter a valid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export type CreateWorkspaceInput = z.infer<typeof createWorkspaceSchema>;
+export const registerSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Enter a valid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export type LoginInput = z.infer<typeof loginSchema>;
+export type RegisterInput = z.infer<typeof registerSchema>;

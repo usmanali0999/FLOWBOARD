@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
@@ -16,7 +17,7 @@ function createBaseSlug(value: string) {
 }
 
 async function generateUniqueSlug(baseSlug: string) {
-  const existing = await db.workspace.findMany({
+  const existing: Array<{ slug: string }> = await db.workspace.findMany({
     where: {
       slug: {
         startsWith: baseSlug,
@@ -27,7 +28,7 @@ async function generateUniqueSlug(baseSlug: string) {
     },
   });
 
-  const taken = new Set(existing.map((item) => item.slug));
+  const taken = new Set(existing.map((item: { slug: string }) => item.slug));
 
   if (!taken.has(baseSlug)) {
     return baseSlug;
@@ -49,10 +50,7 @@ export async function POST(request: Request) {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 401 },
-      );
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -71,58 +69,61 @@ export async function POST(request: Request) {
     const baseSlug = createBaseSlug(name);
     const slug = await generateUniqueSlug(baseSlug);
 
-    const workspace = await db.$transaction(async (tx) => {
-      const createdWorkspace = await tx.workspace.create({
-        data: {
-          name,
-          slug,
-          description,
-        },
-      });
-
-      await tx.workspaceMember.create({
-        data: {
-          userId: session.user.id,
-          workspaceId: createdWorkspace.id,
-          role: "OWNER",
-        },
-      });
-
-      const board = await tx.board.create({
-        data: {
-          title: "launch board",
-          description: "Default board created automatically for this workspace.",
-          workspaceId: createdWorkspace.id,
-        },
-      });
-
-      await tx.column.createMany({
-        data: [
-          {
-            title: "backlog",
-            order: 1,
-            boardId: board.id,
+    const workspace = await db.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        const createdWorkspace = await tx.workspace.create({
+          data: {
+            name,
+            slug,
+            description,
           },
-          {
-            title: "in progress",
-            order: 2,
-            boardId: board.id,
-          },
-          {
-            title: "review",
-            order: 3,
-            boardId: board.id,
-          },
-          {
-            title: "done",
-            order: 4,
-            boardId: board.id,
-          },
-        ],
-      });
+        });
 
-      return createdWorkspace;
-    });
+        await tx.workspaceMember.create({
+          data: {
+            userId: session.user.id,
+            workspaceId: createdWorkspace.id,
+            role: "OWNER",
+          },
+        });
+
+        const board = await tx.board.create({
+          data: {
+            title: "launch board",
+            description:
+              "Default board created automatically for this workspace.",
+            workspaceId: createdWorkspace.id,
+          },
+        });
+
+        await tx.column.createMany({
+          data: [
+            {
+              title: "backlog",
+              order: 1,
+              boardId: board.id,
+            },
+            {
+              title: "in progress",
+              order: 2,
+              boardId: board.id,
+            },
+            {
+              title: "review",
+              order: 3,
+              boardId: board.id,
+            },
+            {
+              title: "done",
+              order: 4,
+              boardId: board.id,
+            },
+          ],
+        });
+
+        return createdWorkspace;
+      },
+    );
 
     return NextResponse.json(
       {

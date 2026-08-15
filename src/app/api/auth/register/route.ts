@@ -7,6 +7,7 @@ import { registerSchema } from "@/features/auth/schemas";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+
     const parsed = registerSchema.safeParse(body);
 
     if (!parsed.success) {
@@ -47,11 +48,15 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(
-      { message: "Account created successfully", user },
+      {
+        message: "Account created successfully",
+        user,
+      },
       { status: 201 },
     );
   } catch (error) {
     console.error("[REGISTER ERROR]", error);
+
     return NextResponse.json(
       { message: "Something went wrong" },
       { status: 500 },

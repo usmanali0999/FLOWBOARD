@@ -13,6 +13,76 @@ import {
 import { CreateWorkspaceDialog } from "@/features/workspace/components/create-workspace-dialog";
 import { WorkspaceCard } from "@/features/workspace/components/workspace-card";
 
+type WorkspaceListItem = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  _count: {
+    boards: number;
+    members: number;
+  };
+  members: Array<{
+    role: string;
+  }>;
+};
+
+type BoardColumn = {
+  id: string;
+  title: string;
+  order: number;
+  boardId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  _count: {
+    tasks: number;
+  };
+};
+
+type WorkspaceBoard = {
+  id: string;
+  title: string;
+  description: string | null;
+  workspaceId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  columns: BoardColumn[];
+  _count: {
+    tasks: number;
+  };
+};
+
+type WorkspaceMember = {
+  id: string;
+  userId: string;
+  workspaceId: string;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
+  user: {
+    id: string;
+    name: string | null;
+    email: string | null;
+  };
+};
+
+type SelectedWorkspace = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  _count: {
+    boards: number;
+    members: number;
+  };
+  boards: WorkspaceBoard[];
+  members: WorkspaceMember[];
+};
+
 export default async function DashboardPage({
   searchParams,
 }: {
@@ -27,7 +97,7 @@ export default async function DashboardPage({
   const params = await searchParams;
   const selectedSlugFromQuery = params.workspace;
 
-  const workspaces = await db.workspace.findMany({
+  const workspaces: WorkspaceListItem[] = await db.workspace.findMany({
     where: {
       members: {
         some: {
@@ -58,12 +128,12 @@ export default async function DashboardPage({
   });
 
   const validSelectedSlug = workspaces.some(
-    (workspace) => workspace.slug === selectedSlugFromQuery,
+    (workspace: WorkspaceListItem) => workspace.slug === selectedSlugFromQuery,
   )
     ? selectedSlugFromQuery
     : workspaces[0]?.slug;
 
-  const selectedWorkspace = validSelectedSlug
+  const selectedWorkspace: SelectedWorkspace | null = validSelectedSlug
     ? await db.workspace.findFirst({
         where: {
           slug: validSelectedSlug,
@@ -123,18 +193,19 @@ export default async function DashboardPage({
     : null;
 
   const totalBoards = workspaces.reduce(
-    (sum, workspace) => sum + workspace._count.boards,
+    (sum: number, workspace: WorkspaceListItem) => sum + workspace._count.boards,
     0,
   );
 
   const totalMembers = workspaces.reduce(
-    (sum, workspace) => sum + workspace._count.members,
+    (sum: number, workspace: WorkspaceListItem) =>
+      sum + workspace._count.members,
     0,
   );
 
   const totalTasksInSelectedWorkspace =
     selectedWorkspace?.boards.reduce(
-      (sum, board) => sum + board._count.tasks,
+      (sum: number, board: WorkspaceBoard) => sum + board._count.tasks,
       0,
     ) ?? 0;
 
@@ -249,7 +320,7 @@ export default async function DashboardPage({
               </CardHeader>
 
               <CardContent className="grid gap-4 md:grid-cols-2">
-                {workspaces.map((workspace) => (
+                {workspaces.map((workspace: WorkspaceListItem) => (
                   <WorkspaceCard
                     key={workspace.id}
                     name={workspace.name}
@@ -312,23 +383,25 @@ export default async function DashboardPage({
                       </p>
 
                       <div className="space-y-3">
-                        {selectedWorkspace.members.map((member) => (
-                          <div
-                            key={member.id}
-                            className="flex items-center justify-between rounded-2xl border bg-background p-3"
-                          >
-                            <div>
-                              <p className="text-sm font-medium">
-                                {member.user.name || "Unnamed user"}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {member.user.email}
-                              </p>
-                            </div>
+                        {selectedWorkspace.members.map(
+                          (member: WorkspaceMember) => (
+                            <div
+                              key={member.id}
+                              className="flex items-center justify-between rounded-2xl border bg-background p-3"
+                            >
+                              <div>
+                                <p className="text-sm font-medium">
+                                  {member.user.name || "Unnamed user"}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {member.user.email}
+                                </p>
+                              </div>
 
-                            <Badge variant="secondary">{member.role}</Badge>
-                          </div>
-                        ))}
+                              <Badge variant="secondary">{member.role}</Badge>
+                            </div>
+                          ),
+                        )}
                       </div>
                     </div>
                   </>
@@ -352,7 +425,7 @@ export default async function DashboardPage({
               </CardHeader>
 
               <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {selectedWorkspace?.boards.map((board) => (
+                {selectedWorkspace?.boards.map((board: WorkspaceBoard) => (
                   <Card key={board.id} className="rounded-2xl border-border/60">
                     <CardHeader>
                       <CardTitle className="text-lg capitalize">
@@ -383,7 +456,7 @@ export default async function DashboardPage({
                       </div>
 
                       <div className="space-y-2">
-                        {board.columns.map((column) => (
+                        {board.columns.map((column: BoardColumn) => (
                           <div
                             key={column.id}
                             className="flex items-center justify-between rounded-xl border bg-background px-3 py-2 text-sm"
