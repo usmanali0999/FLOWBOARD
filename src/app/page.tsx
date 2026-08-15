@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 import { FeatureCard } from "@/components/shared/feature-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -198,6 +199,8 @@ export default function Home() {
           </Card>
         </section>
       </main>
+
+      <Footer />
     </>
   );
 }

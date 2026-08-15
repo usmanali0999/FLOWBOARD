@@ -1,8 +1,16 @@
-import { CalendarClock, FolderKanban, Layers3, Users2 } from "lucide-react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  CalendarClock,
+  FolderKanban,
+  Layers3,
+  Users2,
+} from "lucide-react";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -193,7 +201,8 @@ export default async function DashboardPage({
     : null;
 
   const totalBoards = workspaces.reduce(
-    (sum: number, workspace: WorkspaceListItem) => sum + workspace._count.boards,
+    (sum: number, workspace: WorkspaceListItem) =>
+      sum + workspace._count.boards,
     0,
   );
 
@@ -426,7 +435,10 @@ export default async function DashboardPage({
 
               <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {selectedWorkspace?.boards.map((board: WorkspaceBoard) => (
-                  <Card key={board.id} className="rounded-2xl border-border/60">
+                  <Card
+                    key={board.id}
+                    className="rounded-2xl border-border/60"
+                  >
                     <CardHeader>
                       <CardTitle className="text-lg capitalize">
                         {board.title}
@@ -448,7 +460,9 @@ export default async function DashboardPage({
                         </div>
 
                         <div className="rounded-xl border bg-muted/30 p-3">
-                          <p className="text-xs text-muted-foreground">tasks</p>
+                          <p className="text-xs text-muted-foreground">
+                            tasks
+                          </p>
                           <p className="mt-1 text-xl font-semibold">
                             {board._count.tasks}
                           </p>
@@ -468,6 +482,17 @@ export default async function DashboardPage({
                           </div>
                         ))}
                       </div>
+
+                      <Button
+                        asChild
+                        className="w-full rounded-xl"
+                        size="sm"
+                      >
+                        <Link href={`/board?id=${board.id}`}>
+                          open board
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
                     </CardContent>
                   </Card>
                 ))}

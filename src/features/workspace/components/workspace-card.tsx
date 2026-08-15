@@ -42,7 +42,7 @@ export function WorkspaceCard({
           <div>
             <CardTitle className="capitalize">{name}</CardTitle>
             <CardDescription className="mt-2 line-clamp-2">
-              {description || "No description added yet for this workspace."}
+              {description || "No description added yet."}
             </CardDescription>
           </div>
 
