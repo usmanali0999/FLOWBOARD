@@ -1,36 +1,192 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FLOWBOARD
 
-## Getting Started
+Flowboard is a production-grade collaborative workflow management platform built with modern web technologies.
+This project is designed to showcase professional frontend architecture, authentication, database-driven workflows, and scalable product design.
 
-First, run the development server:
+---
+
+## 🚀 Tech Stack
+
+- **Framework:** Next.js 16 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **UI Components:** shadcn/ui
+- **Database:** PostgreSQL (Neon)
+- **ORM:** Prisma
+- **Authentication:** NextAuth.js v4 (Credentials)
+- **State Management:** Zustand + TanStack Query
+- **Forms & Validation:** React Hook Form + Zod
+- **Notifications:** Sonner
+- **Icons:** Lucide React
+
+---
+
+## ✨ Features
+
+- Professional landing page
+- Dark / Light theme toggle
+- User registration
+- Credentials-based authentication
+- Protected dashboard routes
+- Workspace creation flow
+- Auto-generated default board on workspace creation
+- Auto-generated workflow columns:
+  - backlog
+  - in progress
+  - review
+  - done
+- Real dashboard stats from database
+- Workspace switcher
+- Board summary cards
+- Board details page
+- Task creation with priority levels
+- Modular feature-based folder architecture
+
+---
+
+## 📁 Project Structure
+
+```txt
+src/
+├── app/
+│   ├── api/
+│   ├── board/
+│   ├── dashboard/
+│   └── login/
+├── components/
+│   ├── layout/
+│   ├── shared/
+│   └── ui/
+├── config/
+├── features/
+│   ├── auth/
+│   ├── board/
+│   ├── task/
+│   └── workspace/
+├── lib/
+├── services/
+├── store/
+└── types/
+```
+
+---
+
+## 🔐 Authentication
+
+Flowboard uses **NextAuth.js v4** with:
+
+- Credentials login
+- Protected dashboard routes
+- Session-based authentication
+- Secure password hashing with `bcryptjs`
+
+---
+
+## 🗄 Database Models
+
+- User
+- Workspace
+- WorkspaceMember
+- Board
+- Column
+- Task
+- Account
+- Session
+- VerificationToken
+
+---
+
+## 🛠 Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/usmanali0999/FLOWBOARD.git
+cd FLOWBOARD
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup environment variables
+
+```env
+DATABASE_URL="your_neon_postgresql_connection_string"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+AUTH_SECRET="your_secret"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your_secret"
+NEXT_PUBLIC_GOOGLE_AUTH_ENABLED="false"
+```
+
+### 4. Generate Prisma client
+
+```bash
+npx prisma generate
+```
+
+### 5. Run database migrations
+
+```bash
+npx prisma migrate dev
+```
+
+### 6. Start development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🌐 Main Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Route | Description |
+|-------|-------------|
+| `/` | Landing page |
+| `/login` | Authentication page |
+| `/dashboard` | Protected dashboard |
+| `/board?id=BOARD_ID` | Board view |
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📌 Current Status
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Implemented:**
+- Base app architecture
+- Auth system
+- Prisma + PostgreSQL integration
+- Workspace engine
+- Dashboard module
+- Board module
+- Task creation module
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Planned:**
+- Drag and drop tasks
+- Team invitations
+- Role management UI
+- Realtime updates
+- Analytics widgets
+- Deployment
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎯 Project Goal
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built as **professional portfolio project no. 15** to demonstrate real-world frontend engineering, scalable architecture, and production-grade SaaS design patterns.
+
+---
+
+## 👨‍💻 Author
+
+**Usman Ali**  
+GitHub: [usmanali0999](https://github.com/usmanali0999)
+
+---
+
+## 📄 License
+
+For learning, portfolio, and demonstration purposes.
